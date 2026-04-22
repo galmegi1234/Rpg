@@ -1,46 +1,285 @@
 ================================================================
-  Chronicles of Aetheria - APK 다운로드 & 설치 방법
+  Chronicles of Aetheria - 전체 프로젝트 인수인계 파일
+  작성일: 2026-04-22
 ================================================================
 
-[ 1단계 - GitHub Actions에서 APK 다운로드 ]
-
-1. 아래 주소로 이동
-   https://github.com/galmegi1234/Rpg/actions
-
-2. 목록에서 가장 최근 "Build Android APK" 클릭
-
-3. 페이지 맨 아래 "Artifacts" 섹션에서
-   "Chronicles_of_Aetheria-Android-APK" 클릭 → ZIP 다운로드
-
-4. ZIP 압축 해제 → Chronicles_of_Aetheria.apk 파일 나옴
-
-
-[ 2단계 - 안드로이드 설치 ]
-
-1. 설정 → 보안 (또는 애플리케이션)
-   → "알 수 없는 출처 허용" 켜기
-   (기기마다 위치 다를 수 있음)
-
-2. APK 파일 탭 → 설치
-
-
-[ 조작법 ]
-
-이동      : 왼쪽 가상 조이스틱
-공격      : 오른쪽 ⚔ 버튼
-포션 사용 : 🧪 버튼 (HP 자동 회복)
-회피      : 💨 버튼 (무적 프레임)
-인벤토리  : 🎒 버튼
-상점      : 🛒 버튼
-일시정지  : ⏸ 버튼
-
-
-[ 게임 흐름 ]
-
-마을 스폰 → 평원(Lv1) → 숲(Lv5) → 던전(Lv10)
-각 지역 끝 포털로 이동 / 마을 상점에서 아이템 구매·강화·소환
+[ 레포지토리 ]
+  URL  : https://github.com/galmegi1234/Rpg
+  브랜치: claude/build-2d-rpg-game-m2ZBz
+  엔진 : Godot 4.2.2 (GDScript)
+  목표 : Android APK 배포 (GitHub Actions 자동 빌드)
 
 
 ================================================================
-  빌드 실패 시 GitHub Actions 탭에서 로그 확인
+  폴더 구조 & 각 파일 역할
+================================================================
+
+project.godot
+  - Godot 프로젝트 설정
+  - 입력 맵핑 (WASD / LMB / H / I / B / Space / ESC)
+  - Autoload 등록 (아래 7개 싱글턴)
+
+export_presets.cfg
+  - Android 내보내기 설정 (arm64-v8a, 가로모드, 패키지명)
+  - CI에서 키스토어 경로를 절대경로로 sed 패치해서 사용
+
+APK_설치방법.txt  ← 이 파일
+.github/workflows/build-android.yml
+  - barichello/godot-ci:4.2.2 Docker 컨테이너에서 빌드
+  - 키스토어 생성 → 에디터 설정 → import → APK 빌드 → Artifact 업로드
+  - main 브랜치 푸시 시 GitHub Release 자동 생성
+
+
+----------------------------------------------------------------
+  scripts/managers/  (Autoload 싱글턴 - 전역 접근)
+----------------------------------------------------------------
+
+GameManager.gd
+  - 게임 상태 관리 (MAIN_MENU / PLAYING / PAUSED / GAME_OVER / IN_SHOP / IN_INVENTORY)
+  - 지역 이동 (travel_to_zone), 골드/점수 관리, 몬스터 킬 집계
+  - 주요 시그널: player_died, level_changed, zone_changed, game_over, score_changed, gold_changed
+
+SaveSystem.gd
+  - JSON 저장/불러오기 (user://save_data.json)
+  - 저장 항목: 점수, 골드, 플레이타임, 킬수, 현재지역, 랭크, 인벤토리, 플레이어스탯
+
+SettingsManager.gd
+  - 볼륨, 전체화면 설정 (user://settings.json)
+
+
+----------------------------------------------------------------
+  scripts/systems/  (Autoload 싱글턴 - 게임 시스템)
+----------------------------------------------------------------
+
+RankSystem.gd
+  - 랭크: Bronze(0점) → Silver(500) → Gold(2000) → Platinum(6000)
+  - 랭크업 시 열쇠 1개 획득 (소환 시스템용)
+  - 리더보드 상위 20위 저장 (user://leaderboard.json)
+  - 주요 메서드: get_rank_label(), get_rank_color(), get_rank_progress(), spend_key()
+
+InventorySystem.gd
+  - 30슬롯 인벤토리 + 6 장비슬롯 (weapon/head/chest/legs/offhand/accessory)
+  - add_item(), remove_item(), equip_item(), unequip_slot(), consume_item()
+  - get_equipment_bonus(stat) → 장착 장비 스탯 합산 반환
+  - 시그널: inventory_changed, equipment_changed
+
+ShopSystem.gd
+  - 상점 구매/판매, 소환(가중치 랜덤), 강화(+1~+10, 성공률 90%→10%)
+  - SHOP_ITEMS 배열 / SUMMON_POOL 배열로 아이템 목록 관리
+  - 시그널: purchase_result, summon_result, enhance_result
+
+CombatSystem.gd
+  - calculate_damage(atk, def) → 분산 20% + 크리티컬 5%
+  - calculate_xp_reward(enemy_lv, player_lv) → 레벨차 보정
+  - is_dodge(), knockback_vector()
+
+
+----------------------------------------------------------------
+  scripts/player/
+----------------------------------------------------------------
+
+PlayerController.gd (CharacterBody2D)
+  - 이동: WASD + 가상 조이스틱 (터치 우선, 키보드 fallback)
+  - 공격: LMB / ⚔ 버튼 (쿨타임 0.5초, AttackArea2D 히트박스)
+  - 회피: 스페이스 / 💨 버튼 (무적 0.35초, 속도 500)
+  - 포션: H / 🧪 버튼 (small → large → elixir 자동 선택)
+  - 상태머신: IDLE / WALK / ATTACK / HIT / DEAD / DODGE
+  - 사망 시 1.5초 후 GameManager.trigger_game_over() 호출
+
+PlayerStats.gd (Node)
+  - 스탯: level(1~20), xp, max_hp(100), hp, attack(15), defense(5), speed(180)
+  - 레벨업: XP_TABLE 기준, 레벨당 HP+20 / ATK+3 / DEF+2
+  - effective_attack/defense/speed() → 장비 보너스 포함 값 반환
+  - 시그널: hp_changed, xp_changed, leveled_up, died
+
+
+----------------------------------------------------------------
+  scripts/enemies/
+----------------------------------------------------------------
+
+EnemyAI.gd (CharacterBody2D)
+  - 상태머신: IDLE → PATROL → CHASE → ATTACK → HIT → DEAD
+  - NavigationAgent2D 경로탐색
+  - 피격 시 빨간 플래시 + 넉백
+  - 사망 시: XP/골드 지급, drop_table 기반 아이템 드랍, 데미지 숫자 라벨
+  - @export 변수로 에디터/스포너에서 스탯 주입
+
+EnemySpawner.gd (Node2D)
+  - ZONE_CONFIGS 딕셔너리에 지역별 몬스터 설정 내장
+  - 가중치 랜덤 스폰, max_enemies 유지, 사망 후 respawn_time 대기
+
+
+----------------------------------------------------------------
+  scripts/maps/
+----------------------------------------------------------------
+
+Zone.gd (Node2D) ← 모든 맵 씬의 베이스 스크립트
+  - 플레이어 스폰, 터치 컨트롤 스폰
+  - ShopUI / InventoryUI 상태에 따라 동적 로드/해제
+
+ZonePortal.gd (Area2D)
+  - 플레이어 충돌 시 required_level 체크 후 지역 이동
+
+TownNPC.gd (CharacterBody2D)
+  - 대화 시스템, is_shopkeeper=true 시 상점 진입
+
+WorldMap.gd (Control)
+  - 전체 세계 지도 오버레이, 레벨 조건 만족한 지역만 이동 버튼 활성화
+
+
+----------------------------------------------------------------
+  scripts/ui/
+----------------------------------------------------------------
+
+MainMenu.gd     - 시작/계속/설정/종료, 리더보드 표시, 타이틀 펄스 애니메이션
+HUD.gd          - HP바, XP바, 골드/점수, 랭크바, 지역표시, 레벨업 배너, 팝업
+ShopUI.gd       - 3탭(아이템/소환/강화), 상자 열기 애니메이션, 강화 결과 표시
+InventoryUI.gd  - 그리드 슬롯, 장비 패널, 더블클릭 장착, 판매 기능
+GameOverScreen.gd - 랭크 아이콘 확대 애니메이션, 스탯 요약, 리더보드 상위5위
+TouchControlsManager.gd - 조이스틱/버튼 → 플레이어 메서드 직접 호출
+
+VirtualJoystick.gd
+  - 터치 이벤트로 direction: Vector2 계산 (dead_zone: 0.12)
+  - DisplayServer.is_touchscreen_available() 시에만 표시
+
+
+----------------------------------------------------------------
+  scripts/items/
+----------------------------------------------------------------
+
+Item.gd      - 아이템 데이터 구조 + to_dict() / from_dict()
+Equipment.gd - 강화레벨 기반 스탯 스케일링 (+15%/레벨), 판매가 계산
+
+
+================================================================
+  씬 구조
+================================================================
+
+scenes/MainMenu.tscn         → scripts/ui/MainMenu.gd
+scenes/entities/Player.tscn  → scripts/player/PlayerController.gd
+scenes/entities/Enemy.tscn   → scripts/enemies/EnemyAI.gd
+scenes/maps/Town.tscn        → scripts/maps/Zone.gd (zone_type=TOWN)
+scenes/maps/Plains.tscn      → scripts/maps/Zone.gd (zone_type=PLAINS)
+scenes/maps/Forest.tscn      → scripts/maps/Zone.gd (zone_type=FOREST)
+scenes/maps/Dungeon.tscn     → scripts/maps/Zone.gd (zone_type=DUNGEON)
+scenes/ui/HUD.tscn           → scripts/ui/HUD.gd
+scenes/ui/Shop.tscn          → scripts/ui/ShopUI.gd
+scenes/ui/Inventory.tscn     → scripts/ui/InventoryUI.gd
+scenes/ui/GameOver.tscn      → scripts/ui/GameOverScreen.gd
+scenes/ui/TouchControls.tscn → scripts/ui/TouchControlsManager.gd
+
+
+================================================================
+  몬스터 스탯표
+================================================================
+
+[ 평원 - 권장 Lv 1~5 ]
+  슬라임   : HP 40  / ATK 8  / DEF 1 / SPD 70  / XP 15
+  고블린   : HP 60  / ATK 12 / DEF 3 / SPD 100 / XP 25
+
+[ 숲 - 권장 Lv 5~10 ]
+  포레스트울프: HP 100 / ATK 18 / DEF 5  / SPD 120 / XP 45
+  다크엘프   : HP 80  / ATK 22 / DEF 8  / SPD 130 / XP 55
+
+[ 던전 - 권장 Lv 10+ ]
+  스켈레톤기사: HP 180 / ATK 30 / DEF 15 / SPD 90  / XP 90
+  던전보스    : HP 500 / ATK 55 / DEF 25 / SPD 70  / XP 300
+
+
+================================================================
+  아이템 목록
+================================================================
+
+[ 소모품 ]
+  소형포션  30골드  HP +50
+  대형포션  80골드  HP +150
+  엘릭서   200골드  HP 전회복
+
+[ 무기 ]
+  철검    150골드  ATK +10
+  강철검  400골드  ATK +25
+  미스릴검 소환전용 ATK +50  (희귀)
+  드래곤슬레이어 소환전용 ATK +120 (전설)
+
+[ 방어구 ]
+  가죽갑옷  120골드 DEF +8
+  체인메일  350골드 DEF +20
+  드래곤스케일 소환전용 DEF +80 (전설)
+
+[ 악세사리 ]
+  파워링      소환전용 ATK+30 DEF+15 (에픽)
+  생명의목걸이 소환전용 MaxHP+100 (에픽)
+  신속의장화  180골드 SPD +20
+
+
+================================================================
+  강화 시스템 (ShopSystem.gd 참고)
+================================================================
+
+  강화레벨   비용    성공률
+  +0 → +1   100G    90%
+  +1 → +2   200G    80%
+  +2 → +3   300G    70%
+  +3 → +4   400G    60%
+  +4 → +5   500G    50%
+  +5 → +6   600G    40%
+  +6 → +7   700G    30%
+  +7 → +8   800G    20%
+  +8 → +9   900G    15%
+  +9 → +10  1000G   10%
+
+  성공 시 모든 스탯 +15% (누적)
+
+
+================================================================
+  GitHub Actions 빌드 현황
+================================================================
+
+워크플로우: .github/workflows/build-android.yml
+컨테이너 : barichello/godot-ci:4.2.2
+
+빌드 단계:
+  1. checkout
+  2. Android 환경 진단 (경로 출력)
+  3. debug.keystore 생성 (keytool)
+  4. editor_settings-4.tres 작성 (ANDROID_HOME, 키스토어)
+  5. export_presets.cfg 키스토어 경로 패치 (sed)
+  6. godot --headless --import
+  7. godot --headless --export-debug "Android"
+  8. APK 검증
+  9. Artifact 업로드 (90일 보관)
+  10. main 브랜치 → GitHub Release 자동 생성
+
+
+================================================================
+  이 프로젝트를 새 AI에게 이어받기 위한 컨텍스트
+================================================================
+
+이 게임은 Godot 4.2.2 기반 2D RPG입니다.
+모든 코드는 GDScript로 작성되었으며 스프라이트/오디오 에셋은
+아직 placeholder 상태입니다 (AnimatedSprite2D에 애니메이션 미연결).
+
+현재 남은 작업:
+  1. [필수] AnimatedSprite2D에 실제 스프라이트 시트 연결
+     - idle / walk / attack / hit / death 5개 애니메이션 필요
+     - 플레이어: scenes/entities/Player.tscn
+     - 몬스터  : scenes/entities/Enemy.tscn
+
+  2. [필수] CollisionShape2D 크기 조정
+     - Player, Enemy 모두 shape = CapsuleShape2D new() 상태
+     - 실제 스프라이트 크기에 맞게 조정 필요
+
+  3. [선택] 타일맵 제작
+     - 각 맵 씬의 TileMap 노드에 타일셋 연결
+
+  4. [선택] 배경음악 / 효과음 추가
+     - SettingsManager.gd에 볼륨 시스템 이미 구현됨
+
+  5. [선택] 퀘스트 시스템 추가
+     - TownNPC.gd에 대화 시스템 기반 있음
+
+  6. [확인 중] GitHub Actions APK 빌드
+     - barichello/godot-ci:4.2.2 컨테이너로 시도 중
+     - 마지막 커밋: 487a962
+
 ================================================================
