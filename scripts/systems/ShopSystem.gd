@@ -140,13 +140,13 @@ func open_chest() -> void:
 		RankSystem.keys_available += 1
 
 func _weighted_random(pool: Array[Dictionary]) -> Dictionary:
-	var total := 0
-	for entry in pool:
-		total += entry.get("weight", 10)
-	var roll  := randi() % total
-	var acc   := 0
-	for entry in pool:
-		acc += entry.get("weight", 10)
+	var total: int = 0
+	for entry: Dictionary in pool:
+		total += int(entry.get("weight", 10))
+	var roll: int = randi() % total
+	var acc: int  = 0
+	for entry: Dictionary in pool:
+		acc += int(entry.get("weight", 10))
 		if roll < acc:
 			return entry
 	return pool[pool.size() - 1]

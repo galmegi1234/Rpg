@@ -39,11 +39,12 @@ func load_settings() -> void:
 	var file := FileAccess.open(SETTINGS_PATH, FileAccess.READ)
 	if not file:
 		return
-	var result := JSON.parse_string(file.get_as_text())
+	var result: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
 	if result is Dictionary:
-		master_volume = result.get("master_volume", 1.0)
-		fullscreen    = result.get("fullscreen",    false)
+		var cfg: Dictionary = result
+		master_volume = cfg.get("master_volume", 1.0)
+		fullscreen    = cfg.get("fullscreen",    false)
 
 func _apply_settings() -> void:
 	AudioServer.set_bus_volume_db(0, linear_to_db(master_volume))

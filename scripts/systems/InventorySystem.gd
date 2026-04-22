@@ -109,7 +109,7 @@ func consume_item(item_id: String, count: int = 1) -> bool:
 func get_equipment_bonus(stat: String) -> int:
 	var total := 0
 	for eq_slot in equipped:
-		var item := equipped[eq_slot]
+		var item: Dictionary = equipped[eq_slot]
 		if not item.is_empty() and item.has("stats"):
 			total += item["stats"].get(stat, 0)
 	return total
@@ -135,11 +135,16 @@ func serialize() -> Dictionary:
 func deserialize(data: Dictionary) -> void:
 	if data.has("slots"):
 		var sd: Array = data["slots"]
-		for i in min(sd.size(), MAX_SLOTS):
-			slots[i] = sd[i] if sd[i] is Dictionary else {}
+		for i in mini(sd.size(), MAX_SLOTS):
+			var v: Variant = sd[i]
+			slots[i] = v if v is Dictionary else {}
 	if data.has("equipped"):
-		for k in equipped:
-			equipped[k] = data["equipped"].get(k, {})
+		var eq_raw: Variant = data["equipped"]
+		if eq_raw is Dictionary:
+			var eq_dict: Dictionary = eq_raw
+			for k in equipped:
+				var val: Variant = eq_dict.get(k, {})
+				equipped[k] = val if val is Dictionary else {}
 	inventory_changed.emit()
 
 # ─── Helpers ───────────────────────────────────────────────────────────────────

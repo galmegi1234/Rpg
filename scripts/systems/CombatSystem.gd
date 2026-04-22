@@ -3,12 +3,12 @@ extends Node
 # Central damage / hit calculation — stateless utility functions.
 
 func calculate_damage(attacker_attack: int, defender_defense: int) -> int:
-	var base_dmg  := max(1, attacker_attack - defender_defense)
-	var variance  := int(base_dmg * 0.2)
-	var final_dmg := base_dmg + randi_range(-variance, variance)
-	if randi() % 100 < 5:   # 5 % crit
+	var base_dmg: int  = maxi(1, attacker_attack - defender_defense)
+	var variance: int  = int(base_dmg * 0.2)
+	var final_dmg: int = base_dmg + randi_range(-variance, variance)
+	if randi() % 100 < 5:
 		final_dmg = int(final_dmg * 1.75)
-	return max(1, final_dmg)
+	return maxi(1, final_dmg)
 
 func calculate_xp_reward(enemy_level: int, player_level: int) -> int:
 	var base_xp: int = enemy_level * 15

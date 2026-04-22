@@ -115,9 +115,12 @@ func _load_leaderboard() -> void:
 	var file := FileAccess.open(LEADERBOARD_PATH, FileAccess.READ)
 	if not file:
 		return
-	var result := JSON.parse_string(file.get_as_text())
+	var result: Variant = JSON.parse_string(file.get_as_text())
 	file.close()
 	if result is Array:
 		leaderboard.clear()
-		for e in result:
-			leaderboard.append(e as Dictionary)
+		var arr: Array = result
+		for i in arr.size():
+			if arr[i] is Dictionary:
+				var entry: Dictionary = arr[i]
+				leaderboard.append(entry)
