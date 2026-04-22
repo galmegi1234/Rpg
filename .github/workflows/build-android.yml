@@ -14,106 +14,96 @@ env:
 jobs:
   build-android:
     name: Build Android APK
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.2.2
 
     steps:
       # ── 1. Checkout ─────────────────────────────────────────────────────────
       - name: Checkout
         uses: actions/checkout@v4
 
-      # ── 2. Java 17 ──────────────────────────────────────────────────────────
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-
-      # ── 3. Android SDK components ────────────────────────────────────────────
-      - name: Install Android SDK components
+      # ── 2. Diagnose environment ──────────────────────────────────────────────
+      - name: Diagnose Android environment
         run: |
-          echo "ANDROID_HOME = $ANDROID_HOME"
-          yes | sdkmanager --sdk_root="$ANDROID_HOME" \
-            "platform-tools" \
-            "platforms;android-34" \
-            "build-tools;34.0.0" 2>/dev/null || true
-
-      # ── 4. Install Godot ─────────────────────────────────────────────────────
-      - name: Install Godot ${{ env.GODOT_VERSION }}
-        run: |
-          FILENAME="Godot_v${GODOT_VERSION}-stable_linux.x86_64"
-          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/${FILENAME}.zip"
-          unzip -q "${FILENAME}.zip"
-          sudo mv "${FILENAME}" /usr/local/bin/godot
-          sudo chmod +x /usr/local/bin/godot
+          echo "=== Godot version ==="
           godot --version
+          echo "=== ANDROID_HOME ==="
+          echo "$ANDROID_HOME"
+          echo "=== JAVA_HOME ==="
+          echo "$JAVA_HOME"
+          java -version
+          echo "=== Build tools ==="
+          ls "$ANDROID_HOME/build-tools/" 2>/dev/null || echo "No build-tools dir"
+          echo "=== Platforms ==="
+          ls "$ANDROID_HOME/platforms/" 2>/dev/null || echo "No platforms dir"
+          echo "=== Godot templates ==="
+          ls ~/.local/share/godot/export_templates/ 2>/dev/null || echo "No templates"
+          echo "=== Config dir ==="
+          ls ~/.config/godot/ 2>/dev/null || echo "No godot config"
 
-      # ── 5. Install export templates ──────────────────────────────────────────
-      - name: Install Godot export templates
-        run: |
-          TEMPLATES_DIR="$HOME/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
-          mkdir -p "$TEMPLATES_DIR"
-          TPZ="Godot_v${GODOT_VERSION}-stable_export_templates.tpz"
-          wget -q "https://github.com/godotengine/godot/releases/download/${GODOT_VERSION}-stable/${TPZ}"
-          unzip -q "$TPZ" -d /tmp/godot_tpl
-          mv /tmp/godot_tpl/templates/* "$TEMPLATES_DIR/"
-          echo "Templates:"
-          ls "$TEMPLATES_DIR" | grep -i android
-
-      # ── 6. Generate debug keystore ───────────────────────────────────────────
+      # ── 3. Generate debug keystore ───────────────────────────────────────────
       - name: Generate debug keystore
         run: |
           keytool -genkey -v \
-            -keystore "$GITHUB_WORKSPACE/debug.keystore" \
+            -keystore /tmp/debug.keystore \
             -alias androiddebugkey \
             -keyalg RSA -keysize 2048 -validity 10000 \
             -storepass android -keypass android \
             -dname "CN=Android Debug,O=Android,C=US"
-          echo "Keystore: $(ls -lh $GITHUB_WORKSPACE/debug.keystore)"
+          ls -lh /tmp/debug.keystore
 
-      # ── 7. Write Godot editor settings (echo, not heredoc) ───────────────────
+      # ── 4. Write Godot editor settings ──────────────────────────────────────
       - name: Configure Godot editor settings
         run: |
-          mkdir -p "$HOME/.config/godot"
+          mkdir -p ~/.config/godot
           {
             echo '[gd_resource type="EditorSettings" format=3]'
             echo ''
             echo '[resource]'
             echo "export/android/android_sdk_path = \"$ANDROID_HOME\""
-            echo "export/android/debug_keystore = \"$GITHUB_WORKSPACE/debug.keystore\""
+            echo "export/android/debug_keystore = \"/tmp/debug.keystore\""
             echo 'export/android/debug_keystore_user = "androiddebugkey"'
             echo 'export/android/debug_keystore_pass = "android"'
-          } > "$HOME/.config/godot/editor_settings-4.tres"
+          } > ~/.config/godot/editor_settings-4.tres
           echo "=== editor_settings-4.tres ==="
-          cat "$HOME/.config/godot/editor_settings-4.tres"
+          cat ~/.config/godot/editor_settings-4.tres
 
-      # ── 8. Import project ────────────────────────────────────────────────────
-      - name: Import project assets
+      # ── 5. Patch export_presets.cfg with absolute keystore path ──────────────
+      - name: Patch export presets keystore path
         run: |
-          cd "$GITHUB_WORKSPACE"
-          timeout 60 godot --headless --path . --import 2>&1 || true
-          echo "Import finished"
+          sed -i 's|keystore/debug="debug.keystore"|keystore/debug="/tmp/debug.keystore"|g' \
+            export_presets.cfg
+          echo "=== Keystore lines in export_presets.cfg ==="
+          grep -i keystore export_presets.cfg
 
-      # ── 9. Build APK ─────────────────────────────────────────────────────────
-      - name: Build Android debug APK
+      # ── 6. Import project ────────────────────────────────────────────────────
+      - name: Import Godot project
         run: |
-          mkdir -p "$GITHUB_WORKSPACE/builds/android"
-          cd "$GITHUB_WORKSPACE"
-          godot --headless --path . \
+          timeout 90 godot --headless --import 2>&1 || true
+          echo "Import step done"
+
+      # ── 7. Build APK ─────────────────────────────────────────────────────────
+      - name: Build Android APK
+        run: |
+          mkdir -p builds/android
+          godot --headless \
             --export-debug "Android" \
-            "builds/android/${EXPORT_NAME}.apk"
+            "builds/android/${EXPORT_NAME}.apk" 2>&1
 
-      # ── 10. Verify ───────────────────────────────────────────────────────────
+      # ── 8. Verify APK ────────────────────────────────────────────────────────
       - name: Verify APK
         run: |
-          APK="$GITHUB_WORKSPACE/builds/android/${EXPORT_NAME}.apk"
+          APK="builds/android/${EXPORT_NAME}.apk"
           if [ -f "$APK" ]; then
-            echo "✅ APK built: $(du -sh $APK)"
+            echo "✅ APK built successfully: $(du -sh $APK)"
           else
-            echo "❌ APK not found"
+            echo "❌ APK not found at $APK"
+            ls builds/android/ 2>/dev/null || echo "builds/android/ is empty"
             exit 1
           fi
 
-      # ── 11. Upload artifact ──────────────────────────────────────────────────
+      # ── 9. Upload artifact ───────────────────────────────────────────────────
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
@@ -121,7 +111,7 @@ jobs:
           path: builds/android/${{ env.EXPORT_NAME }}.apk
           retention-days: 90
 
-      # ── 12. Release on main push ─────────────────────────────────────────────
+      # ── 10. Create Release on main ───────────────────────────────────────────
       - name: Create GitHub Release
         if: github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
@@ -129,10 +119,10 @@ jobs:
           tag_name: v${{ github.run_number }}
           name: "Chronicles of Aetheria v${{ github.run_number }}"
           body: |
-            ## 📱 Android APK 다운로드
+            ## 📱 Android APK
 
             **설치 방법:**
-            1. `${{ env.EXPORT_NAME }}.apk` 파일 다운로드
+            1. `${{ env.EXPORT_NAME }}.apk` 다운로드
             2. 안드로이드 설정 → 보안 → **알 수 없는 출처 허용**
             3. APK 실행 → 설치
 
