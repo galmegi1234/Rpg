@@ -12,6 +12,8 @@ extends CharacterBody2D
 @onready var attack_fx:       GPUParticles2D   = $AttackFX
 @onready var hud:             CanvasLayer      = null   # injected after scene load
 
+var _touch_controls: TouchControlsManager = null
+
 # ─── State ─────────────────────────────────────────────────────────────────────
 enum State { IDLE, WALK, ATTACK, HIT, DEAD, DODGE }
 
@@ -44,6 +46,11 @@ func _ready() -> void:
 
 	add_to_group("player")
 	_play_anim("idle")
+	# Grab touch controls if present
+	await get_tree().process_frame
+	var tc := get_tree().get_first_node_in_group("touch_controls")
+	if tc is TouchControlsManager:
+		_touch_controls = tc
 
 # ─── Process ───────────────────────────────────────────────────────────────────
 
@@ -107,11 +114,19 @@ func _handle_input() -> void:
 func _get_move_input() -> Vector2:
 	if current_state == State.DODGE:
 		return dodge_direction
-	var dir := Vector2(
+	# Keyboard
+	var kb_dir := Vector2(
 		Input.get_axis("move_left", "move_right"),
 		Input.get_axis("move_up", "move_down")
 	)
-	return dir.normalized()
+	if kb_dir.length_squared() > 0.01:
+		return kb_dir.normalized()
+	# Virtual joystick (touch)
+	if _touch_controls:
+		var joy_dir := _touch_controls.get_move_direction()
+		if joy_dir.length_squared() > 0.01:
+			return joy_dir
+	return Vector2.ZERO
 
 # ─── Actions ───────────────────────────────────────────────────────────────────
 

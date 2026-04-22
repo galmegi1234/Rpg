@@ -1,0 +1,93 @@
+[gd_scene load_steps=3 format=3 uid="uid://b1touch0001"]
+
+[ext_resource type="Script" path="res://scripts/ui/VirtualJoystick.gd" id="1_joy"]
+[ext_resource type="Script" path="res://scripts/ui/TouchControlsManager.gd" id="2_tc"]
+
+[node name="TouchControls" type="CanvasLayer"]
+layer = 20
+
+[node name="Root" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("2_tc")
+
+[node name="Joystick" type="Control" parent="Root"]
+layout_mode = 1
+anchors_preset = 12
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -220.0
+offset_right = 240.0
+offset_bottom = -20.0
+script = ExtResource("1_joy")
+joystick_radius = 90.0
+knob_radius = 36.0
+
+[node name="Base" type="Control" parent="Root/Joystick"]
+
+[node name="Knob" type="Control" parent="Root/Joystick"]
+
+[node name="RightButtons" type="VBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 9
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -200.0
+offset_top = -240.0
+offset_right = -20.0
+offset_bottom = -20.0
+theme_override_constants/separation = 12
+alignment = 2
+
+[node name="AttackButton" type="Button" parent="Root/RightButtons"]
+custom_minimum_size = Vector2(90, 90)
+text = "⚔"
+add_theme_font_size_override = 32
+tooltip_text = "Attack"
+
+[node name="PotionButton" type="Button" parent="Root/RightButtons"]
+custom_minimum_size = Vector2(72, 72)
+text = "🧪"
+add_theme_font_size_override = 26
+tooltip_text = "Potion (H)"
+
+[node name="DodgeButton" type="Button" parent="Root/RightButtons"]
+custom_minimum_size = Vector2(72, 72)
+text = "💨"
+add_theme_font_size_override = 26
+tooltip_text = "Dodge"
+
+[node name="TopButtons" type="HBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -280.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 56.0
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="InvButton" type="Button" parent="Root/TopButtons"]
+custom_minimum_size = Vector2(60, 44)
+text = "🎒"
+add_theme_font_size_override = 20
+
+[node name="ShopButton" type="Button" parent="Root/TopButtons"]
+custom_minimum_size = Vector2(60, 44)
+text = "🛒"
+add_theme_font_size_override = 20
+
+[node name="MenuButton" type="Button" parent="Root/TopButtons"]
+custom_minimum_size = Vector2(60, 44)
+text = "⏸"
+add_theme_font_size_override = 20

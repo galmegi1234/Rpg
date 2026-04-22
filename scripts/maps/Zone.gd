@@ -12,9 +12,10 @@ extends Node2D
 @onready var shop_ui_layer: CanvasLayer = $ShopLayer
 @onready var inv_ui_layer:  CanvasLayer = $InvLayer
 
-const PLAYER_SCENE  := "res://scenes/entities/Player.tscn"
-const SHOP_UI_SCENE := "res://scenes/ui/Shop.tscn"
-const INV_UI_SCENE  := "res://scenes/ui/Inventory.tscn"
+const PLAYER_SCENE         := "res://scenes/entities/Player.tscn"
+const SHOP_UI_SCENE        := "res://scenes/ui/Shop.tscn"
+const INV_UI_SCENE         := "res://scenes/ui/Inventory.tscn"
+const TOUCH_CONTROLS_SCENE := "res://scenes/ui/TouchControls.tscn"
 
 var player: PlayerController = null
 var shop_ui_instance:  Control = null
@@ -40,6 +41,15 @@ func _spawn_player() -> void:
 	if player_spawn:
 		player.global_position = player_spawn.global_position
 	GameManager.player_ref = player
+	_spawn_touch_controls()
+
+func _spawn_touch_controls() -> void:
+	var scene := load(TOUCH_CONTROLS_SCENE) as PackedScene
+	if not scene:
+		return
+	var tc := scene.instantiate()
+	tc.get_node("Root").add_to_group("touch_controls")
+	add_child(tc)
 
 func _setup_background() -> void:
 	var backdrop := ColorRect.new()
