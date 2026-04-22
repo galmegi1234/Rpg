@@ -1,0 +1,75 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1forest001"]
+
+[ext_resource type="Script" path="res://scripts/maps/Zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://scripts/enemies/EnemySpawner.gd" id="2_spawn"]
+[ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/maps/ZonePortal.gd" id="4_portal"]
+
+[node name="Forest" type="Node2D"]
+script = ExtResource("1_zone")
+zone_type = 2
+background_color = Color(0.05, 0.2, 0.05, 1)
+
+[node name="TileMap" type="TileMap" parent="."]
+
+[node name="EnemySpawner" type="Node2D" parent="."]
+script = ExtResource("2_spawn")
+zone = 2
+max_enemies = 10
+spawn_radius = 500.0
+respawn_time = 10.0
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(-500, 0)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="ShopLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="InvLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Background" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-1500,-1000, 1500,-1000, 1500,1000, -1500,1000)
+color = Color(0.08, 0.25, 0.08, 1)
+z_index = -10
+
+[node name="DarkOverlay" type="ColorRect" parent="."]
+z_index = -9
+color = Color(0, 0, 0, 0.3)
+size = Vector2(3000, 2000)
+position = Vector2(-1500, -1000)
+
+[node name="ToPlainsPortal" type="Area2D" parent="."]
+position = Vector2(-550, 0)
+script = ExtResource("4_portal")
+destination = 1
+required_level = 1
+portal_label = "← Plains"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ToPlainsPortal"]
+shape = RectangleShape2D new()
+
+[node name="PortalLabel" type="Label" parent="ToPlainsPortal"]
+position = Vector2(-35, -50)
+text = "← Plains"
+add_theme_font_size_override = 14
+add_theme_color_override/font_color = Color(0.8, 0.8, 1, 1)
+
+[node name="ToDungeonPortal" type="Area2D" parent="."]
+position = Vector2(550, 0)
+script = ExtResource("4_portal")
+destination = 3
+required_level = 10
+portal_label = "🔥 Dungeon (Lv.10)"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ToDungeonPortal"]
+shape = RectangleShape2D new()
+
+[node name="PortalLabel" type="Label" parent="ToDungeonPortal"]
+position = Vector2(-60, -50)
+text = "🔥 Dungeon (Lv.10)"
+add_theme_font_size_override = 14
+add_theme_color_override/font_color = Color(1, 0.4, 0.2, 1)

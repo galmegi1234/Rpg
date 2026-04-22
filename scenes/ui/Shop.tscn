@@ -1,0 +1,178 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1shop0001"]
+
+[ext_resource type="Script" path="res://scripts/ui/ShopUI.gd" id="1_shop"]
+
+[node name="ShopUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_shop")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.55)
+mouse_filter = 0
+
+[node name="ShopPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -420.0
+offset_top = -280.0
+offset_right = 420.0
+offset_bottom = 280.0
+
+[node name="MainVBox" type="VBoxContainer" parent="ShopPanel"]
+theme_override_constants/separation = 8
+
+[node name="TitleRow" type="HBoxContainer" parent="ShopPanel/MainVBox"]
+
+[node name="ShopTitle" type="Label" parent="ShopPanel/MainVBox/TitleRow"]
+text = "🛒  Shop"
+size_flags_horizontal = 3
+add_theme_font_size_override = 24
+
+[node name="CloseButton" type="Button" parent="ShopPanel/MainVBox/TitleRow"]
+text = "✖"
+custom_minimum_size = Vector2(36, 36)
+
+[node name="GoldBar" type="HBoxContainer" parent="ShopPanel/MainVBox"]
+
+[node name="GoldLabel" type="Label" parent="ShopPanel/MainVBox/GoldBar"]
+text = "💰 0"
+add_theme_font_size_override = 18
+add_theme_color_override/font_color = Color(1, 0.85, 0.2, 1)
+
+[node name="KeysHint" type="Label" parent="ShopPanel/MainVBox/GoldBar"]
+text = "   |  🗝 Keys shown in Summon tab"
+add_theme_font_size_override = 14
+add_theme_color_override/font_color = Color(0.7, 0.7, 0.7, 1)
+
+[node name="TabBar" type="HBoxContainer" parent="ShopPanel/MainVBox"]
+theme_override_constants/separation = 0
+
+[node name="ItemsTab" type="Button" parent="ShopPanel/MainVBox/TabBar"]
+custom_minimum_size = Vector2(0, 40)
+size_flags_horizontal = 3
+text = "🛍  Items"
+toggle_mode = true
+button_pressed = true
+add_theme_font_size_override = 16
+
+[node name="SummonTab" type="Button" parent="ShopPanel/MainVBox/TabBar"]
+custom_minimum_size = Vector2(0, 40)
+size_flags_horizontal = 3
+text = "📦  Summon"
+toggle_mode = true
+add_theme_font_size_override = 16
+
+[node name="EnhanceTab" type="Button" parent="ShopPanel/MainVBox/TabBar"]
+custom_minimum_size = Vector2(0, 40)
+size_flags_horizontal = 3
+text = "⚡  Enhance"
+toggle_mode = true
+add_theme_font_size_override = 16
+
+[node name="Content" type="Control" parent="ShopPanel/MainVBox"]
+custom_minimum_size = Vector2(0, 340)
+size_flags_vertical = 3
+
+[node name="ItemsPanel" type="PanelContainer" parent="ShopPanel/MainVBox/Content"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="ShopPanel/MainVBox/Content/ItemsPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ItemList" type="VBoxContainer" parent="ShopPanel/MainVBox/Content/ItemsPanel/ScrollContainer"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 6
+
+[node name="SummonPanel" type="PanelContainer" parent="ShopPanel/MainVBox/Content"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+visible = false
+
+[node name="SummonVBox" type="VBoxContainer" parent="ShopPanel/MainVBox/Content/SummonPanel"]
+alignment = 1
+theme_override_constants/separation = 14
+
+[node name="KeysLabel" type="Label" parent="ShopPanel/MainVBox/Content/SummonPanel/SummonVBox"]
+text = "🗝 Keys: 0"
+horizontal_alignment = 1
+add_theme_font_size_override = 18
+
+[node name="ChestBox" type="PanelContainer" parent="ShopPanel/MainVBox/Content/SummonPanel/SummonVBox"]
+custom_minimum_size = Vector2(120, 120)
+
+[node name="ChestIcon" type="Label" parent="ShopPanel/MainVBox/Content/SummonPanel/SummonVBox/ChestBox"]
+text = "📦"
+horizontal_alignment = 1
+vertical_alignment = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+add_theme_font_size_override = 64
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="ShopPanel/MainVBox/Content/SummonPanel/SummonVBox/ChestBox"]
+
+[node name="OpenButton" type="Button" parent="ShopPanel/MainVBox/Content/SummonPanel/SummonVBox"]
+text = "🔓 Open Chest"
+custom_minimum_size = Vector2(180, 50)
+add_theme_font_size_override = 18
+
+[node name="ResultLabel" type="Label" parent="ShopPanel/MainVBox/Content/SummonPanel/SummonVBox"]
+text = ""
+horizontal_alignment = 1
+add_theme_font_size_override = 17
+
+[node name="EnhancePanel" type="PanelContainer" parent="ShopPanel/MainVBox/Content"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+visible = false
+
+[node name="EnhanceHBox" type="HBoxContainer" parent="ShopPanel/MainVBox/Content/EnhancePanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="InventoryList" type="VBoxContainer" parent="ShopPanel/MainVBox/Content/EnhancePanel/EnhanceHBox"]
+custom_minimum_size = Vector2(240, 0)
+size_flags_vertical = 3
+theme_override_constants/separation = 6
+
+[node name="RightVBox" type="VBoxContainer" parent="ShopPanel/MainVBox/Content/EnhancePanel/EnhanceHBox"]
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="InfoLabel" type="Label" parent="ShopPanel/MainVBox/Content/EnhancePanel/EnhanceHBox/RightVBox"]
+text = "Select an item to enhance."
+add_theme_font_size_override = 15
+
+[node name="EnhanceButton" type="Button" parent="ShopPanel/MainVBox/Content/EnhancePanel/EnhanceHBox/RightVBox"]
+text = "⚡ Enhance"
+custom_minimum_size = Vector2(160, 50)
+add_theme_font_size_override = 18
+disabled = true
+
+[node name="ResultLabel" type="Label" parent="ShopPanel/MainVBox/Content/EnhancePanel/EnhanceHBox/RightVBox"]
+text = ""
+add_theme_font_size_override = 17

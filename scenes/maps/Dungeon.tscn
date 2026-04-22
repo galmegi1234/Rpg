@@ -1,0 +1,80 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1dungeon01"]
+
+[ext_resource type="Script" path="res://scripts/maps/Zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://scripts/enemies/EnemySpawner.gd" id="2_spawn"]
+[ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/maps/ZonePortal.gd" id="4_portal"]
+
+[node name="Dungeon" type="Node2D"]
+script = ExtResource("1_zone")
+zone_type = 3
+background_color = Color(0.08, 0.04, 0.04, 1)
+
+[node name="TileMap" type="TileMap" parent="."]
+
+[node name="EnemySpawner" type="Node2D" parent="."]
+script = ExtResource("2_spawn")
+zone = 3
+max_enemies = 6
+spawn_radius = 400.0
+respawn_time = 15.0
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(-380, 0)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="ShopLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="InvLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="Background" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(-1200,-800, 1200,-800, 1200,800, -1200,800)
+color = Color(0.1, 0.05, 0.05, 1)
+z_index = -10
+
+[node name="LavaGlow" type="ColorRect" parent="."]
+z_index = -9
+color = Color(0.5, 0.1, 0.0, 0.15)
+size = Vector2(2400, 1600)
+position = Vector2(-1200, -800)
+
+[node name="TorchLeft" type="Node2D" parent="."]
+position = Vector2(-350, -200)
+
+[node name="TorchIcon" type="Label" parent="TorchLeft"]
+text = "🔦"
+add_theme_font_size_override = 28
+
+[node name="TorchRight" type="Node2D" parent="."]
+position = Vector2(350, -200)
+
+[node name="TorchIcon" type="Label" parent="TorchRight"]
+text = "🔦"
+add_theme_font_size_override = 28
+
+[node name="ToForestPortal" type="Area2D" parent="."]
+position = Vector2(-450, 0)
+script = ExtResource("4_portal")
+destination = 2
+required_level = 1
+portal_label = "← Forest"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ToForestPortal"]
+shape = RectangleShape2D new()
+
+[node name="PortalLabel" type="Label" parent="ToForestPortal"]
+position = Vector2(-35, -50)
+text = "← Forest"
+add_theme_font_size_override = 14
+add_theme_color_override/font_color = Color(0.6, 1, 0.6, 1)
+
+[node name="BossWarning" type="Label" parent="."]
+position = Vector2(-120, -320)
+text = "⚠  DANGER ZONE  ⚠\nBoss enemies lurk here!"
+horizontal_alignment = 1
+add_theme_font_size_override = 16
+add_theme_color_override/font_color = Color(1, 0.3, 0.1, 1)

@@ -1,0 +1,130 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1inventory1"]
+
+[ext_resource type="Script" path="res://scripts/ui/InventoryUI.gd" id="1_inv"]
+
+[node name="InventoryUI" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_inv")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0, 0, 0, 0.5)
+mouse_filter = 0
+
+[node name="InventoryPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 0.0
+anchor_top = 0.5
+anchor_right = 0.0
+anchor_bottom = 0.5
+offset_left = 20.0
+offset_top = -260.0
+offset_right = 480.0
+offset_bottom = 260.0
+
+[node name="InvVBox" type="VBoxContainer" parent="InventoryPanel"]
+theme_override_constants/separation = 8
+
+[node name="TitleRow" type="HBoxContainer" parent="InventoryPanel/InvVBox"]
+
+[node name="InvTitle" type="Label" parent="InventoryPanel/InvVBox/TitleRow"]
+text = "🎒 Inventory"
+size_flags_horizontal = 3
+add_theme_font_size_override = 22
+
+[node name="GoldLabel" type="Label" parent="InventoryPanel/InvVBox/TitleRow"]
+text = "💰 0"
+add_theme_font_size_override = 16
+add_theme_color_override/font_color = Color(1, 0.85, 0.2, 1)
+
+[node name="CloseButton" type="Button" parent="InventoryPanel/InvVBox/TitleRow"]
+text = "✖"
+custom_minimum_size = Vector2(32, 32)
+
+[node name="ScrollContainer" type="ScrollContainer" parent="InventoryPanel/InvVBox"]
+custom_minimum_size = Vector2(0, 300)
+
+[node name="SlotGrid" type="GridContainer" parent="InventoryPanel/InvVBox/ScrollContainer"]
+columns = 6
+theme_override_constants/h_separation = 4
+theme_override_constants/v_separation = 4
+
+[node name="EquipPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -480.0
+offset_top = -260.0
+offset_right = -20.0
+offset_bottom = 180.0
+
+[node name="EquipVBox" type="VBoxContainer" parent="EquipPanel"]
+theme_override_constants/separation = 6
+
+[node name="EquipTitle" type="Label" parent="EquipPanel/EquipVBox"]
+text = "🧥 Equipment"
+horizontal_alignment = 1
+add_theme_font_size_override = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="EquipPanel/EquipVBox"]
+theme_override_constants/separation = 5
+
+[node name="InfoPanel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 0.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -200.0
+offset_right = 480.0
+offset_bottom = -20.0
+
+[node name="InfoVBox" type="VBoxContainer" parent="InfoPanel"]
+theme_override_constants/separation = 5
+
+[node name="Icon" type="Label" parent="InfoPanel/InfoVBox"]
+text = ""
+add_theme_font_size_override = 32
+
+[node name="NameLabel" type="Label" parent="InfoPanel/InfoVBox"]
+text = "Select an item"
+add_theme_font_size_override = 18
+
+[node name="TypeLabel" type="Label" parent="InfoPanel/InfoVBox"]
+text = ""
+add_theme_font_size_override = 14
+add_theme_color_override/font_color = Color(0.7, 0.8, 1, 1)
+
+[node name="StatsLabel" type="Label" parent="InfoPanel/InfoVBox"]
+text = ""
+add_theme_font_size_override = 14
+
+[node name="ActionRow" type="HBoxContainer" parent="InfoPanel/InfoVBox"]
+theme_override_constants/separation = 8
+
+[node name="EquipButton" type="Button" parent="InfoPanel/InfoVBox/ActionRow"]
+text = "Equip"
+custom_minimum_size = Vector2(80, 36)
+visible = false
+
+[node name="UseButton" type="Button" parent="InfoPanel/InfoVBox/ActionRow"]
+text = "Use"
+custom_minimum_size = Vector2(80, 36)
+visible = false
+
+[node name="SellButton" type="Button" parent="InfoPanel/InfoVBox/ActionRow"]
+text = "Sell"
+custom_minimum_size = Vector2(80, 36)
+visible = false

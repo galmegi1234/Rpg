@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://b1player001"]
+
+[ext_resource type="Script" path="res://scripts/player/PlayerController.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/player/PlayerStats.gd" id="2_pstats"]
+
+[node name="Player" type="CharacterBody2D"]
+collision_layer = 1
+collision_mask = 6
+script = ExtResource("1_player")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(2, 2)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = CapsuleShape2D new()
+
+[node name="AttackArea" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 2
+position = Vector2(36, 0)
+monitoring = true
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AttackArea"]
+shape = CircleShape2D new()
+disabled = true
+
+[node name="HurtArea" type="Area2D" parent="."]
+collision_layer = 2
+collision_mask = 8
+monitoring = true
+monitorable = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtArea"]
+shape = CapsuleShape2D new()
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position_smoothing_enabled = true
+position_smoothing_speed = 5.0
+zoom = Vector2(2, 2)
+
+[node name="PlayerStats" type="Node" parent="."]
+script = ExtResource("2_pstats")
+
+[node name="LevelUpFX" type="GPUParticles2D" parent="."]
+amount = 40
+lifetime = 1.2
+one_shot = true
+explosiveness = 0.9
+
+[node name="AttackFX" type="GPUParticles2D" parent="."]
+amount = 15
+lifetime = 0.4
+one_shot = true
+explosiveness = 0.95

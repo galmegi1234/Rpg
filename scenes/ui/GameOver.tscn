@@ -1,0 +1,101 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1gameover1"]
+
+[ext_resource type="Script" path="res://scripts/ui/GameOverScreen.gd" id="1_gameover"]
+
+[node name="GameOver" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource("1_gameover")
+
+[node name="Backdrop" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.03, 0.0, 0.08, 0.92)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Panel" type="PanelContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(520, 600)
+
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel"]
+theme_override_constants/separation = 14
+
+[node name="GameOverTitle" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "⚔  GAME OVER  ⚔"
+horizontal_alignment = 1
+add_theme_font_size_override = 32
+add_theme_color_override/font_color = Color(1, 0.3, 0.2, 1)
+
+[node name="RankIcon" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "🥉"
+horizontal_alignment = 1
+add_theme_font_size_override = 64
+
+[node name="RankName" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "Bronze"
+horizontal_alignment = 1
+add_theme_font_size_override = 28
+add_theme_color_override/font_color = Color(0.8, 0.55, 0.2, 1)
+
+[node name="RankBar" type="ProgressBar" parent="CenterContainer/Panel/VBox"]
+custom_minimum_size = Vector2(320, 20)
+min_value = 0.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="Separator1" type="HSeparator" parent="CenterContainer/Panel/VBox"]
+
+[node name="ScoreLabel" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "Score:  0"
+horizontal_alignment = 1
+add_theme_font_size_override = 20
+
+[node name="KillsLabel" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "Monsters Killed:  0"
+horizontal_alignment = 1
+add_theme_font_size_override = 18
+
+[node name="TimeLabel" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "Time:  0:00"
+horizontal_alignment = 1
+add_theme_font_size_override = 18
+
+[node name="LevelLabel" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "Final Level:  1"
+horizontal_alignment = 1
+add_theme_font_size_override = 18
+
+[node name="Separator2" type="HSeparator" parent="CenterContainer/Panel/VBox"]
+
+[node name="LBTitle" type="Label" parent="CenterContainer/Panel/VBox"]
+text = "🏆 Top Scores"
+horizontal_alignment = 1
+add_theme_font_size_override = 18
+
+[node name="Leaderboard" type="VBoxContainer" parent="CenterContainer/Panel/VBox"]
+theme_override_constants/separation = 4
+
+[node name="Separator3" type="HSeparator" parent="CenterContainer/Panel/VBox"]
+
+[node name="Buttons" type="HBoxContainer" parent="CenterContainer/Panel/VBox"]
+alignment = 1
+theme_override_constants/separation = 20
+
+[node name="RetryButton" type="Button" parent="CenterContainer/Panel/VBox/Buttons"]
+custom_minimum_size = Vector2(160, 52)
+text = "⚔  Play Again"
+add_theme_font_size_override = 18
+
+[node name="MenuButton" type="Button" parent="CenterContainer/Panel/VBox/Buttons"]
+custom_minimum_size = Vector2(160, 52)
+text = "🏠  Main Menu"
+add_theme_font_size_override = 18

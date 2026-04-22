@@ -1,0 +1,106 @@
+{
+  "zones": {
+    "plains": {
+      "description": "Greenwood Plains - beginner hunting ground",
+      "recommended_level": "1-5",
+      "enemies": [
+        {
+          "id": "slime",
+          "name": "Slime",
+          "max_hp": 40,
+          "attack": 8,
+          "defense": 1,
+          "speed": 70,
+          "xp_reward": 15,
+          "gold_min": 2,
+          "gold_max": 5,
+          "detect_range": 180,
+          "attack_range": 40,
+          "spawn_weight": 60
+        },
+        {
+          "id": "goblin",
+          "name": "Goblin",
+          "max_hp": 60,
+          "attack": 12,
+          "defense": 3,
+          "speed": 100,
+          "xp_reward": 25,
+          "gold_min": 4,
+          "gold_max": 10,
+          "detect_range": 220,
+          "attack_range": 45,
+          "spawn_weight": 40
+        }
+      ]
+    },
+    "forest": {
+      "description": "Dark Forest - intermediate zone",
+      "recommended_level": "5-10",
+      "enemies": [
+        {
+          "id": "forest_wolf",
+          "name": "Forest Wolf",
+          "max_hp": 100,
+          "attack": 18,
+          "defense": 5,
+          "speed": 120,
+          "xp_reward": 45,
+          "gold_min": 8,
+          "gold_max": 18,
+          "detect_range": 250,
+          "attack_range": 50,
+          "spawn_weight": 50
+        },
+        {
+          "id": "dark_elf",
+          "name": "Dark Elf",
+          "max_hp": 80,
+          "attack": 22,
+          "defense": 8,
+          "speed": 130,
+          "xp_reward": 55,
+          "gold_min": 12,
+          "gold_max": 25,
+          "detect_range": 270,
+          "attack_range": 42,
+          "spawn_weight": 50
+        }
+      ]
+    },
+    "dungeon": {
+      "description": "Infernal Dungeon - high danger zone",
+      "recommended_level": "10+",
+      "enemies": [
+        {
+          "id": "skeleton_knight",
+          "name": "Skeleton Knight",
+          "max_hp": 180,
+          "attack": 30,
+          "defense": 15,
+          "speed": 90,
+          "xp_reward": 90,
+          "gold_min": 20,
+          "gold_max": 40,
+          "detect_range": 300,
+          "attack_range": 55,
+          "spawn_weight": 70
+        },
+        {
+          "id": "dungeon_boss",
+          "name": "Dungeon Boss",
+          "max_hp": 500,
+          "attack": 55,
+          "defense": 25,
+          "speed": 70,
+          "xp_reward": 300,
+          "gold_min": 80,
+          "gold_max": 150,
+          "detect_range": 350,
+          "attack_range": 60,
+          "spawn_weight": 30
+        }
+      ]
+    }
+  }
+}

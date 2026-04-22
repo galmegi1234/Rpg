@@ -1,0 +1,163 @@
+{
+  "consumables": [
+    {
+      "id": "potion_small",
+      "name": "Small Potion",
+      "icon": "🧪",
+      "type": "consumable",
+      "rarity": "common",
+      "value": 30,
+      "stackable": true,
+      "heal": 50,
+      "description": "Restores 50 HP."
+    },
+    {
+      "id": "potion_large",
+      "name": "Large Potion",
+      "icon": "🍶",
+      "type": "consumable",
+      "rarity": "uncommon",
+      "value": 80,
+      "stackable": true,
+      "heal": 150,
+      "description": "Restores 150 HP."
+    },
+    {
+      "id": "elixir",
+      "name": "Elixir of Life",
+      "icon": "✨",
+      "type": "consumable",
+      "rarity": "rare",
+      "value": 200,
+      "stackable": true,
+      "heal": 9999,
+      "description": "Fully restores HP."
+    }
+  ],
+  "weapons": [
+    {
+      "id": "sword_iron",
+      "name": "Iron Sword",
+      "icon": "⚔️",
+      "type": "weapon",
+      "rarity": "common",
+      "value": 150,
+      "stackable": false,
+      "stats": { "attack": 10 },
+      "enhance_level": 0,
+      "description": "A basic iron sword."
+    },
+    {
+      "id": "sword_steel",
+      "name": "Steel Sword",
+      "icon": "🗡️",
+      "type": "weapon",
+      "rarity": "uncommon",
+      "value": 400,
+      "stackable": false,
+      "stats": { "attack": 25 },
+      "enhance_level": 0,
+      "description": "Forged from fine steel."
+    },
+    {
+      "id": "sword_mythril",
+      "name": "Mythril Sword",
+      "icon": "⚡",
+      "type": "weapon",
+      "rarity": "rare",
+      "value": 1200,
+      "stackable": false,
+      "stats": { "attack": 50 },
+      "enhance_level": 0,
+      "description": "Crafted from rare mythril ore."
+    },
+    {
+      "id": "sword_dragon",
+      "name": "Dragon Slayer",
+      "icon": "🐉",
+      "type": "weapon",
+      "rarity": "legendary",
+      "value": 5000,
+      "stackable": false,
+      "stats": { "attack": 120 },
+      "enhance_level": 0,
+      "description": "A legendary blade imbued with dragon power."
+    }
+  ],
+  "armor": [
+    {
+      "id": "armor_leather",
+      "name": "Leather Armor",
+      "icon": "🥋",
+      "type": "chest",
+      "rarity": "common",
+      "value": 120,
+      "stackable": false,
+      "stats": { "defense": 8 },
+      "enhance_level": 0,
+      "description": "Light but durable leather protection."
+    },
+    {
+      "id": "armor_chain",
+      "name": "Chainmail",
+      "icon": "🛡️",
+      "type": "chest",
+      "rarity": "uncommon",
+      "value": 350,
+      "stackable": false,
+      "stats": { "defense": 20 },
+      "enhance_level": 0,
+      "description": "Interlocked rings for solid protection."
+    },
+    {
+      "id": "armor_dragon",
+      "name": "Dragonscale Armor",
+      "icon": "🦎",
+      "type": "chest",
+      "rarity": "legendary",
+      "value": 6000,
+      "stackable": false,
+      "stats": { "defense": 80 },
+      "enhance_level": 0,
+      "description": "Scales harvested from an ancient dragon."
+    }
+  ],
+  "accessories": [
+    {
+      "id": "ring_power",
+      "name": "Ring of Power",
+      "icon": "💍",
+      "type": "accessory",
+      "rarity": "epic",
+      "value": 2000,
+      "stackable": false,
+      "stats": { "attack": 30, "defense": 15 },
+      "enhance_level": 0,
+      "description": "Pulses with raw magical energy."
+    },
+    {
+      "id": "amulet_life",
+      "name": "Amulet of Life",
+      "icon": "📿",
+      "type": "accessory",
+      "rarity": "epic",
+      "value": 1800,
+      "stackable": false,
+      "stats": { "max_hp": 100 },
+      "enhance_level": 0,
+      "description": "Bound with the essence of vitality."
+    },
+    {
+      "id": "boots_swift",
+      "name": "Swift Boots",
+      "icon": "👢",
+      "type": "legs",
+      "rarity": "uncommon",
+      "value": 180,
+      "stackable": false,
+      "stats": { "speed": 20 },
+      "enhance_level": 0,
+      "description": "Enchanted for swift movement."
+    }
+  ]
+}

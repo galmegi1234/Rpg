@@ -1,0 +1,174 @@
+[gd_scene load_steps=5 format=3 uid="uid://b1town00001"]
+
+[ext_resource type="Script" path="res://scripts/maps/Zone.gd" id="1_zone"]
+[ext_resource type="Script" path="res://scripts/enemies/EnemySpawner.gd" id="2_spawn"]
+[ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="3_hud"]
+[ext_resource type="Script" path="res://scripts/maps/TownNPC.gd" id="4_npc"]
+
+[node name="Town" type="Node2D"]
+script = ExtResource("1_zone")
+zone_type = 0
+background_color = Color(0.18, 0.38, 0.18, 1)
+
+[node name="TileMap" type="TileMap" parent="."]
+tile_set = null
+
+[node name="EnemySpawner" type="Node2D" parent="."]
+script = ExtResource("2_spawn")
+zone = 0
+max_enemies = 0
+
+[node name="PlayerSpawn" type="Marker2D" parent="."]
+position = Vector2(0, 0)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+script = ExtResource("3_hud")
+
+[node name="ShopLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="InvLayer" type="CanvasLayer" parent="."]
+layer = 10
+
+[node name="TownDecor" type="Node2D" parent="."]
+
+[node name="TownWalls" type="Polygon2D" parent="TownDecor"]
+polygon = PackedVector2Array(-400,-300, 400,-300, 400,300, -400,300)
+color = Color(0.3, 0.25, 0.15, 1)
+
+[node name="GrassGround" type="Polygon2D" parent="TownDecor"]
+polygon = PackedVector2Array(-380,-280, 380,-280, 380,280, -380,280)
+color = Color(0.25, 0.55, 0.2, 1)
+z_index = -9
+
+[node name="Well" type="Polygon2D" parent="TownDecor"]
+position = Vector2(-120, -80)
+polygon = PackedVector2Array(-20,-20, 20,-20, 20,20, -20,20)
+color = Color(0.4, 0.3, 0.2, 1)
+
+[node name="WellLabel" type="Label" parent="TownDecor/Well"]
+position = Vector2(-10, -30)
+text = "💧"
+add_theme_font_size_override = 20
+
+[node name="ShopBuilding" type="Polygon2D" parent="TownDecor"]
+position = Vector2(150, -120)
+polygon = PackedVector2Array(-50,-50, 50,-50, 50,50, -50,50)
+color = Color(0.55, 0.35, 0.2, 1)
+
+[node name="ShopSign" type="Label" parent="TownDecor/ShopBuilding"]
+position = Vector2(-22, -70)
+text = "🛒 Shop"
+add_theme_font_size_override = 14
+add_theme_color_override/font_color = Color(1, 0.9, 0.2, 1)
+
+[node name="ShopNPC" type="CharacterBody2D" parent="."]
+position = Vector2(150, -60)
+script = ExtResource("4_npc")
+npc_name = "Merchant"
+dialogue = ["Welcome, adventurer! I have the finest wares!", "Press E or click to browse my shop."]
+is_shopkeeper = true
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ShopNPC"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ShopNPC"]
+shape = CapsuleShape2D new()
+
+[node name="NameLabel" type="Label" parent="ShopNPC"]
+position = Vector2(-30, -50)
+text = "Merchant"
+add_theme_font_size_override = 13
+add_theme_color_override/font_color = Color(1, 0.9, 0.2, 1)
+
+[node name="InteractLabel" type="Label" parent="ShopNPC"]
+position = Vector2(-35, -65)
+text = "[LMB] Talk"
+add_theme_font_size_override = 12
+add_theme_color_override/font_color = Color(0.7, 1, 0.7, 1)
+visible = false
+
+[node name="DialogBox" type="PanelContainer" parent="ShopNPC"]
+position = Vector2(-80, -110)
+custom_minimum_size = Vector2(160, 0)
+visible = false
+
+[node name="Label" type="Label" parent="ShopNPC/DialogBox"]
+text = ""
+add_theme_font_size_override = 14
+autowrap_mode = 3
+
+[node name="InteractArea" type="Area2D" parent="ShopNPC"]
+
+[node name="InteractCollision" type="CollisionShape2D" parent="ShopNPC/InteractArea"]
+shape = CircleShape2D new()
+
+[node name="GuardNPC" type="CharacterBody2D" parent="."]
+position = Vector2(-180, 60)
+script = ExtResource("4_npc")
+npc_name = "Guard"
+dialogue = ["The plains to the east are dangerous.", "Be careful, adventurer.", "Head to the forest once you reach level 5."]
+is_shopkeeper = false
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="GuardNPC"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GuardNPC"]
+shape = CapsuleShape2D new()
+
+[node name="NameLabel" type="Label" parent="GuardNPC"]
+position = Vector2(-20, -50)
+text = "Guard"
+add_theme_font_size_override = 13
+
+[node name="InteractLabel" type="Label" parent="GuardNPC"]
+position = Vector2(-35, -65)
+text = "[LMB] Talk"
+add_theme_font_size_override = 12
+visible = false
+
+[node name="DialogBox" type="PanelContainer" parent="GuardNPC"]
+position = Vector2(-80, -110)
+custom_minimum_size = Vector2(160, 0)
+visible = false
+
+[node name="Label" type="Label" parent="GuardNPC/DialogBox"]
+text = ""
+add_theme_font_size_override = 14
+autowrap_mode = 3
+
+[node name="InteractArea" type="Area2D" parent="GuardNPC"]
+
+[node name="InteractCollision" type="CollisionShape2D" parent="GuardNPC/InteractArea"]
+shape = CircleShape2D new()
+
+[node name="TravelSigns" type="Node2D" parent="."]
+
+[node name="PlainsSign" type="Node2D" parent="TravelSigns"]
+position = Vector2(360, 0)
+
+[node name="SignPole" type="Polygon2D" parent="TravelSigns/PlainsSign"]
+polygon = PackedVector2Array(-4,-60, 4,-60, 4,30, -4,30)
+color = Color(0.4, 0.25, 0.1, 1)
+
+[node name="SignBoard" type="Polygon2D" parent="TravelSigns/PlainsSign"]
+position = Vector2(0, -60)
+polygon = PackedVector2Array(-40,-15, 40,-15, 40,15, -40,15)
+color = Color(0.55, 0.35, 0.15, 1)
+
+[node name="SignLabel" type="Label" parent="TravelSigns/PlainsSign"]
+position = Vector2(-38, -75)
+text = "🌿 Plains →"
+add_theme_font_size_override = 12
+
+[node name="PlainsPortal" type="Area2D" parent="."]
+position = Vector2(400, 0)
+
+[node name="PortalShape" type="CollisionShape2D" parent="PlainsPortal"]
+shape = RectangleShape2D new()
+
+[node name="PortalLabel" type="Label" parent="PlainsPortal"]
+position = Vector2(-40, -50)
+text = "[ Plains ]"
+add_theme_font_size_override = 14
+add_theme_color_override/font_color = Color(0.5, 1, 0.5, 1)
+
+[node name="ZonePortalScript" type="Node" parent="PlainsPortal"]

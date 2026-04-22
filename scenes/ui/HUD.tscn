@@ -1,0 +1,151 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1hud00001"]
+
+[ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+script = ExtResource("1_hud")
+
+[node name="TopLeft" type="VBoxContainer" parent="."]
+anchors_preset = 0
+offset_left = 12.0
+offset_top = 12.0
+offset_right = 280.0
+offset_bottom = 120.0
+theme_override_constants/separation = 4
+
+[node name="HPContainer" type="HBoxContainer" parent="TopLeft"]
+
+[node name="HPIcon" type="Label" parent="TopLeft/HPContainer"]
+text = "❤"
+add_theme_font_size_override = 18
+
+[node name="HPBar" type="ProgressBar" parent="TopLeft/HPContainer"]
+custom_minimum_size = Vector2(180, 20)
+min_value = 0.0
+max_value = 100.0
+value = 100.0
+show_percentage = false
+
+[node name="HPLabel" type="Label" parent="TopLeft/HPContainer"]
+text = "100 / 100"
+add_theme_font_size_override = 14
+
+[node name="GoldLabel" type="Label" parent="TopLeft"]
+text = "💰 100"
+add_theme_font_size_override = 16
+add_theme_color_override/font_color = Color(1, 0.85, 0.2, 1)
+
+[node name="ScoreLabel" type="Label" parent="TopLeft"]
+text = "⭐ 0"
+add_theme_font_size_override = 15
+
+[node name="TopRight" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -260.0
+offset_top = 12.0
+offset_right = -12.0
+offset_bottom = 180.0
+theme_override_constants/separation = 4
+
+[node name="ZoneLabel" type="Label" parent="TopRight"]
+text = "📍 Town"
+horizontal_alignment = 2
+add_theme_font_size_override = 16
+
+[node name="RankHBox" type="HBoxContainer" parent="TopRight"]
+
+[node name="RankIcon" type="Label" parent="TopRight/RankHBox"]
+text = "🥉"
+add_theme_font_size_override = 20
+
+[node name="RankLabel" type="Label" parent="TopRight/RankHBox"]
+text = "Bronze"
+size_flags_horizontal = 3
+add_theme_font_size_override = 16
+
+[node name="RankBar" type="ProgressBar" parent="TopRight"]
+custom_minimum_size = Vector2(200, 14)
+min_value = 0.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="MinimapContainer" type="SubViewportContainer" parent="TopRight"]
+custom_minimum_size = Vector2(150, 150)
+stretch = true
+
+[node name="MinimapViewport" type="SubViewport" parent="TopRight/MinimapContainer"]
+size = Vector2(300, 300)
+
+[node name="Bottom" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -250.0
+offset_top = -80.0
+offset_right = 250.0
+offset_bottom = -12.0
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="LevelLabel" type="Label" parent="Bottom"]
+text = "Lv.1"
+vertical_alignment = 1
+add_theme_font_size_override = 17
+
+[node name="XPBar" type="ProgressBar" parent="Bottom"]
+custom_minimum_size = Vector2(240, 18)
+min_value = 0.0
+max_value = 100.0
+value = 0.0
+show_percentage = false
+
+[node name="Skills" type="HBoxContainer" parent="Bottom"]
+theme_override_constants/separation = 8
+
+[node name="PotionBtn" type="Button" parent="Bottom/Skills"]
+custom_minimum_size = Vector2(56, 56)
+text = "🧪\nH"
+add_theme_font_size_override = 13
+
+[node name="DodgeBtn" type="Button" parent="Bottom/Skills"]
+custom_minimum_size = Vector2(56, 56)
+text = "💨\nSPC"
+add_theme_font_size_override = 13
+
+[node name="LevelUpBanner" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 160.0
+offset_right = 200.0
+offset_bottom = 210.0
+visible = false
+
+[node name="Label" type="Label" parent="LevelUpBanner"]
+text = "✨ Level Up! ✨"
+horizontal_alignment = 1
+add_theme_font_size_override = 22
+add_theme_color_override/font_color = Color(1, 0.9, 0.1, 1)
+
+[node name="PopupLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -200.0
+offset_top = 220.0
+offset_right = 200.0
+offset_bottom = 250.0
+text = ""
+horizontal_alignment = 1
+add_theme_font_size_override = 18
+visible = false
